@@ -6,7 +6,7 @@
 /*   By: tjinichi <tjinichi@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 23:19:23 by sehattor          #+#    #+#             */
-/*   Updated: 2020/11/10 18:06:32 by tjinichi         ###   ########.fr       */
+/*   Updated: 2020/11/10 18:56:03 by tjinichi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,13 @@ static t_gnl	*gnl_lstnew(char *content, int fd)
 
 static void		gnl_lstadd_front(t_gnl **lst, t_gnl *new)
 {
+	if (!new)
+		return ;
 	if (!*lst)
 	{
 		*lst = new;
 		return ;
 	}
-	if (!new)
-		return ;
 	new->next = *lst;
 	*lst = new;
 }
@@ -62,7 +62,6 @@ int				get_next_line(int fd, char **line)
 	char			*tmp;
 	int				rc;
 
-	*line = NULL;
 	if (fd < 0 || !line || (!(now = recognize_fd(fd, &lst))) \
 		|| (!(buf = malloc(sizeof(char) * (BUFFER_SIZE + 1)))))
 		return (-1);
@@ -73,11 +72,17 @@ int				get_next_line(int fd, char **line)
 		now->store = ft_strjoin(now->store, buf);
 		free(tmp);
 		if (!(now->store))
+		{
+			free(now->store);
 			return (-1);
+		}
 	}
 	free(buf);
 	if (rc < 0)
+	{
+		free(now->store);
 		return (-1);
+	}
 	if (newline != NULL)
 	{
 		*line = ft_substr(now->store, 0, newline - now->store);
@@ -85,7 +90,10 @@ int				get_next_line(int fd, char **line)
 		now->store = ft_strdup(newline + 1);
 		free(tmp);
 		if (*line == NULL)
+		{
+			free(now->store);
 			return (-1);
+		}
 		return (1);
 	}
 	*line = ft_strdup(now->store);
