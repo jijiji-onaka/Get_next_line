@@ -6,11 +6,11 @@
 /*   By: tjinichi <tjinichi@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 23:19:23 by sehattor          #+#    #+#             */
-/*   Updated: 2020/11/11 17:37:04 by tjinichi         ###   ########.fr       */
+/*   Updated: 2020/11/11 17:56:17 by tjinichi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "includes/get_next_line.h"
 
 static int		free_return(char **ptr, int rc)
 {

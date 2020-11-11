@@ -6,7 +6,7 @@
 /*   By: tjinichi <tjinichi@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 23:15:50 by sehattor          #+#    #+#             */
-/*   Updated: 2020/11/11 17:36:33 by tjinichi         ###   ########.fr       */
+/*   Updated: 2020/11/11 17:58:01 by tjinichi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/stat.h>
-# include "./Libft/libft.h"
+# include "./libft.h"
 # define NO_RETURN 2
 # define R_NL 1
 # define R_EOF 0

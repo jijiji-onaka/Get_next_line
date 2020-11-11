@@ -6,11 +6,11 @@
 /*   By: tjinichi <tjinichi@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 23:39:11 by sehattor          #+#    #+#             */
-/*   Updated: 2020/11/11 17:25:39 by tjinichi         ###   ########.fr       */
+/*   Updated: 2020/11/11 17:56:21 by tjinichi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "includes/get_next_line.h"
 
 t_gnl	*gnl_lstnew(char *content, int fd)
 {
