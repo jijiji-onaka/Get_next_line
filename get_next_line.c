@@ -6,100 +6,68 @@
 /*   By: tjinichi <tjinichi@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 23:19:23 by sehattor          #+#    #+#             */
-/*   Updated: 2020/11/10 18:56:03 by tjinichi         ###   ########.fr       */
+/*   Updated: 2020/11/11 17:37:04 by tjinichi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static t_gnl	*gnl_lstnew(char *content, int fd)
+static int		free_return(char **ptr, int rc)
 {
-	t_gnl	*new_element;
-
-	if (!(new_element = malloc(sizeof(t_gnl))))
-		return (NULL);
-	new_element->fd = fd;
-	new_element->store = ft_strdup(content);
-	new_element->next = NULL;
-	return (new_element);
+	free(*ptr);
+	*ptr = NULL;
+	return (rc);
 }
 
-static void		gnl_lstadd_front(t_gnl **lst, t_gnl *new)
+static int		read_and_store(int fd, char **store, int rc)
 {
-	if (!new)
-		return ;
-	if (!*lst)
-	{
-		*lst = new;
-		return ;
-	}
-	new->next = *lst;
-	*lst = new;
-}
+	char	*buf;
+	char	*tmp_ptr;
 
-static t_gnl	*recognize_fd(int fd, t_gnl **lst)
-{
-	t_gnl			*res;
-
-	res = *lst;
-	while (res)
+	if (!(buf = malloc(sizeof(char) * (BUFFER_SIZE + 1))))
+		return (-1);
+	if ((rc = read(fd, buf, BUFFER_SIZE)) >= 0)
+		buf[rc] = '\0';
+	if (!(*store) && rc > 0)
+		*store = ft_strdup(buf);
+	else if (*store && rc > 0)
 	{
-		if (res->fd == fd)
-			return (res);
-		res = res->next;
+		tmp_ptr = *store;
+		*store = ft_strjoin(tmp_ptr, buf);
+		free(tmp_ptr);
+		tmp_ptr = NULL;
 	}
-	res = gnl_lstnew("", fd);
-	gnl_lstadd_front(lst, res);
-	return (res);
+	free(buf);
+	if (rc == -1)
+		free_return(store, rc);
+	return (rc);
 }
 
 int				get_next_line(int fd, char **line)
 {
 	static t_gnl	*lst;
 	t_gnl			*now;
-	char			*buf;
 	char			*newline;
 	char			*tmp;
 	int				rc;
 
-	if (fd < 0 || !line || (!(now = recognize_fd(fd, &lst))) \
-		|| (!(buf = malloc(sizeof(char) * (BUFFER_SIZE + 1)))))
+	if (fd < 0 || !line || (!(now = recognize_fd(fd, &lst))))
 		return (-1);
-	while ((!(newline = ft_strchr(now->store, '\n'))) && (rc = read(fd, buf, BUFFER_SIZE)) > 0)
-	{
-		buf[rc] = '\0';
-		tmp = now->store;
-		now->store = ft_strjoin(now->store, buf);
-		free(tmp);
+	rc = 1;
+	while ((!(newline = ft_strchr(now->store, '\n'))) && \
+		(rc = read_and_store(fd, &(now->store), rc)) > 0)
 		if (!(now->store))
-		{
-			free(now->store);
-			return (-1);
-		}
-	}
-	free(buf);
-	if (rc < 0)
-	{
-		free(now->store);
-		return (-1);
-	}
-	if (newline != NULL)
+			return (free_return(&(now->store), R_ERR));
+	if (newline)
 	{
 		*line = ft_substr(now->store, 0, newline - now->store);
-		char *tmp = now->store;
+		tmp = now->store;
 		now->store = ft_strdup(newline + 1);
-		free(tmp);
-		if (*line == NULL)
-		{
-			free(now->store);
-			return (-1);
-		}
-		return (1);
+		free_return(&tmp, NO_RETURN);
+		return ((!(*line)) || !(now->store) ? \
+			free_return(&(now->store), R_ERR) : R_NL);
 	}
 	*line = ft_strdup(now->store);
-	free(now->store);
-	now->store = NULL;
-	if (*line == NULL)
-		return (-1);
-	return (0);
+	free_return(&(now->store), NO_RETURN);
+	return ((!(*line) || rc < 0) ? R_ERR : R_EOF);
 }

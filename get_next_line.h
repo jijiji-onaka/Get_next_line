@@ -6,7 +6,7 @@
 /*   By: tjinichi <tjinichi@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 23:15:50 by sehattor          #+#    #+#             */
-/*   Updated: 2020/11/10 18:02:05 by tjinichi         ###   ########.fr       */
+/*   Updated: 2020/11/11 17:36:33 by tjinichi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,11 @@
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/stat.h>
-# define FD_MAX  256
+# include "./Libft/libft.h"
+# define NO_RETURN 2
+# define R_NL 1
+# define R_EOF 0
+# define R_ERR -1
 
 typedef struct	s_gnl
 {
@@ -26,10 +30,10 @@ typedef struct	s_gnl
 	char			*store;
 	struct s_gnl	*next;
 }				t_gnl;
-char			*ft_strdup(const char *s1);
-size_t			ft_strlen(const char *str);
-char			*ft_substr(char const *s, unsigned int start, size_t len);
-char			*ft_strjoin(char const *s1, char const *s2);
-char			*ft_strchr(const char *s, int c);
+
+t_gnl			*gnl_lstnew(char *content, int fd);
+void			gnl_lstadd_front(t_gnl **lst, t_gnl *new);
+t_gnl			*recognize_fd(int fd, t_gnl **lst);
+int				get_next_line(int fd, char **line);
 
 #endif

@@ -6,114 +6,49 @@
 /*   By: tjinichi <tjinichi@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/18 23:39:11 by sehattor          #+#    #+#             */
-/*   Updated: 2020/11/10 18:01:49 by tjinichi         ###   ########.fr       */
+/*   Updated: 2020/11/11 17:25:39 by tjinichi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *str)
+t_gnl	*gnl_lstnew(char *content, int fd)
 {
-	size_t i;
+	t_gnl	*new_element;
 
-	i = 0;
-	while (str[i] != '\0')
-	{
-		i++;
-	}
-	return (i);
+	if (!(new_element = malloc(sizeof(t_gnl))))
+		return (NULL);
+	new_element->fd = fd;
+	new_element->store = ft_strdup(content);
+	new_element->next = NULL;
+	return (new_element);
 }
 
-char	*ft_strdup(const char *s1)
+void	gnl_lstadd_front(t_gnl **lst, t_gnl *new)
 {
-	char	*res;
-	size_t	len;
-	size_t	i;
+	if (!lst || !new)
+		return ;
+	if (!*lst)
+	{
+		*lst = new;
+		return ;
+	}
+	new->next = *lst;
+	*lst = new;
+}
 
-	if (s1 == NULL)
-		return (ft_strdup(""));
-	len = ft_strlen(s1);
-	if (!(res = malloc(sizeof(char) * (len + 1))))
+t_gnl	*recognize_fd(int fd, t_gnl **lst)
+{
+	t_gnl			*res;
+
+	res = *lst;
+	while (res)
 	{
-		return (NULL);
+		if (res->fd == fd)
+			return (res);
+		res = res->next;
 	}
-	i = 0;
-	while (s1[i])
-	{
-		res[i] = s1[i];
-		i++;
-	}
-	res[i] = '\0';
+	res = gnl_lstnew("", fd);
+	gnl_lstadd_front(lst, res);
 	return (res);
-}
-
-char	*ft_substr(char const *s, unsigned int start, size_t len)
-{
-	char			*str;
-	unsigned int	i;
-	size_t			mini_len;
-
-	if (s == NULL)
-		return (NULL);
-	if (ft_strlen(s) < start)
-		return (ft_strdup(""));
-	mini_len = ft_strlen(&s[start]);
-	if (mini_len < len)
-		len = mini_len;
-	if (!(str = malloc(sizeof(char) * (len + 1))))
-		return (NULL);
-	i = 0;
-	while (i < len)
-	{
-		str[i] = s[i + start];
-		i++;
-	}
-	str[i] = '\0';
-	return (str);
-}
-
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	char		*str;
-	size_t		len;
-	size_t		i;
-	size_t		j;
-
-	if (s1 == NULL || s2 == NULL)
-		return (NULL);
-	len = ft_strlen(s1) + ft_strlen(s2);
-	if (!(str = malloc(sizeof(char) * (len + 1))))
-		return (NULL);
-	i = 0;
-	while (s1[i])
-	{
-		str[i] = s1[i];
-		i++;
-	}
-	j = 0;
-	while (s2[j])
-	{
-		str[i + j] = s2[j];
-		j++;
-	}
-	str[i + j] = '\0';
-	return (str);
-}
-
-char	*ft_strchr(const char *s, int c)
-{
-	char	*s_tmp;
-
-	if (!s)
-		return (NULL);
-	s_tmp = (char *)s;
-	while (*s_tmp)
-	{
-		if (*s_tmp == c)
-			return (s_tmp);
-		s_tmp++;
-	}
-	if (*s_tmp == '\0' && c == '\0')
-		return (s_tmp);
-	return (NULL);
 }
