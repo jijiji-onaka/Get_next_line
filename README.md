@@ -32,7 +32,7 @@ int main()
 	int		rc;
 	char	*line;
 
-	fd = open("<読み取りたいファイル名>", O_RDONLY);
+	fd = open("<読み取りたいファイル名 : filename you want to read>", O_RDONLY);
 	if (fd < 0)
 		return (-1);
 	while ((rc = get_next_line(fd, &line)) >= 0)
