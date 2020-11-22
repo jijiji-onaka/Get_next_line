@@ -44,5 +44,7 @@ int main()
 	}
 	if (rc < 0)
 		return (-1);
+	close(fd);
+	return (0);
 }
 ```
